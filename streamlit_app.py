@@ -64,14 +64,14 @@ riddle = random.choice(riddle_list)
 # なぞなぞの表示
 st.subheader("なぞなぞ: " + riddle["riddle"])
 
-# 解説の表示
-st.write("解説: " + riddle["explanation"])
-
 # ユーザーの答えを入力
 user_answer = st.text_input("答えを入力してください")
 
 # 答えが入力された場合
 if user_answer:
+    # 解説を表示
+    st.write("解説: " + riddle["explanation"])
+    
     # 正解かどうかをチェック
     if user_answer.strip() == riddle["answer"]:
         st.success("正解です！")
@@ -83,5 +83,4 @@ if st.button("次のなぞなぞ"):
     # 新しいなぞなぞを表示
     riddle = random.choice(riddle_list)
     st.subheader("なぞなぞ: " + riddle["riddle"])
-    st.write("解説: " + riddle["explanation"])
     user_answer = st.text_input("答えを入力してください", key=random.randint(0, 1000))  # ランダムキーで状態更新
