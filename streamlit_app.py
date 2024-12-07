@@ -55,4 +55,4 @@ st.title("なぞなぞに挑戦しよう！")
 
 # キーワードの選択
 st.header("なぞなぞを開始するキーワードを選んでください")
-selected_topic = st.selectbox("キーワードを選んで
+selected_topic = st.selectbox("キーワードを選んで”）
