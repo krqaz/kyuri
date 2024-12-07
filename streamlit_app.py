@@ -1,43 +1,53 @@
 import streamlit as st
-import pandas as pd
+import random
 
-# タイトルの表示
-st.title("一週間の勉強計画作成")
+# キーワードとそれに関連するクイズデータの作成
+quiz_data = {
+    "数学": [
+        {"question": "1 + 1 = ?", "options": ["1", "2", "3", "4"], "answer": "2"},
+        {"question": "πの値は？", "options": ["3.14", "3.41", "3.00", "3.20"], "answer": "3.14"},
+        {"question": "2 × 2 = ?", "options": ["3", "4", "5", "6"], "answer": "4"}
+    ],
+    "歴史": [
+        {"question": "アメリカ独立宣言は何年に発表されたか？", "options": ["1776", "1800", "1812", "1900"], "answer": "1776"},
+        {"question": "第二次世界大戦はいつ終わったか？", "options": ["1945", "1939", "1918", "1965"], "answer": "1945"},
+        {"question": "ナポレオンはどこの国の出身か？", "options": ["フランス", "イギリス", "ドイツ", "イタリア"], "answer": "フランス"}
+    ],
+    "プログラミング": [
+        {"question": "Pythonの公式のロゴに描かれている動物は？", "options": ["カメ", "ヘビ", "トカゲ", "ウサギ"], "answer": "ヘビ"},
+        {"question": "HTMLのタグで見出しを表すものは？", "options": ["<header>", "<head>", "<h1>", "<div>"], "answer": "<h1>"},
+        {"question": "Pythonのバージョン3.6で導入された機能は？", "options": ["f文字列", "ジェネレータ", "型アノテーション", "モジュールのインポート"], "answer": "f文字列"}
+    ]
+}
 
-# ユーザーからの入力を受け取る
-st.header("勉強内容と目標時間を入力してください")
+# アプリのタイトル
+st.title("キーワード関連クイズ")
 
-subjects = st.text_area("勉強する科目をカンマで区切って入力してください（例：数学, 英語, プログラミング）")
-study_hours = st.text_area("各科目ごとの1週間の勉強時間をカンマで区切って入力してください（例：10, 8, 12）")
+# キーワードの選択
+st.header("クイズを開始するキーワードを選んでください")
+selected_topic = st.selectbox("キーワードを選んでください", options=["数学", "歴史", "プログラミング"])
 
-# 入力がある場合に処理
-if subjects and study_hours:
-    # 入力されたデータをリストに変換
-    subjects_list = [subject.strip() for subject in subjects.split(',')]
-    hours_list = [int(hour.strip()) for hour in study_hours.split(',')]
-    
-    # 入力されたデータを基に勉強計画を作成
-    days = ['月', '火', '水', '木', '金', '土', '日']
-    
-    # 各日の勉強時間を均等に割り当てる（単純な方法）
-    total_hours = sum(hours_list)
-    daily_hours = total_hours // len(days)  # 各日ごとの勉強時間
-    remaining_hours = total_hours % len(days)  # 残り時間（余り）
+# クイズのランダムな選択
+quiz_list = quiz_data[selected_topic]
+quiz = random.choice(quiz_list)
 
-    # 1週間の勉強計画を作成
-    schedule = pd.DataFrame(columns=days)
-    
-    for idx, subject in enumerate(subjects_list):
-        subject_hours = hours_list[idx]
-        
-        # 各科目の勉強時間を均等に分ける
-        subject_schedule = [daily_hours] * len(days)
-        for i in range(remaining_hours):
-            subject_schedule[i] += 1
-        
-        # 1週間の各科目の計画を表示
-        schedule[subject] = subject_schedule
-    
-    # 結果を表示
-    st.subheader("一週間の勉強計画")
-    st.write(schedule)
+# クイズ問題を表示
+st.subheader("問題: " + quiz["question"])
+
+# 選択肢を表示
+user_answer = st.radio("選択肢:", quiz["options"])
+
+# ユーザーが答えを選択した場合
+if user_answer:
+    # 正解かどうかをチェック
+    if user_answer == quiz["answer"]:
+        st.success("正解です！")
+    else:
+        st.error(f"間違いです。正解は {quiz['answer']} です。")
+
+# クイズの進行
+if st.button("次の問題"):
+    # 新しいクイズを表示
+    quiz = random.choice(quiz_list)
+    st.subheader("問題: " + quiz["question"])
+    user_answer = st.radio("選択肢:", quiz["options"], key=random.randint(0, 1000))  # ランダムキーで状態更新
